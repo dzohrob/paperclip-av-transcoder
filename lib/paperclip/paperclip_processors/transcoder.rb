@@ -32,6 +32,7 @@ module Paperclip
 
       @exif_data = MiniExiftool.new(@file.path)
       @meta[:rotate] = @exif_data.rotation
+      log "Rotation data: #{@meta[:rotate]}"
 
       @time             = options[:time].nil? ? 3 : options[:time]
       @auto_rotate      = options[:auto_rotate].nil? ? false : options[:auto_rotate]
@@ -59,21 +60,21 @@ module Paperclip
         if output_is_image?
           @time = @time.call(@meta, @options) if @time.respond_to?(:call)
           @cli.filter_seek @time
+        end
 
-          if @auto_rotate && !@meta[:rotate].nil?
-            log "Adding rotation #{@meta[:rotate]}"
-            arg = case @meta[:rotate]
-                  when 90 then 'transpose=1'
-                  when 180 then 'vflip, hflip'
-                  when 270 then 'transpose=2'
-                  end
-            if @convert_options[:output][:vf]
-              @convert_options[:output][:vf] += ", #{arg}"
-            else
-              @convert_options[:output][:vf] = "#{arg}"
-            end
-            @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
+        if @auto_rotate && !@meta[:rotate].nil?
+          log "Adding rotation #{@meta[:rotate]}"
+          arg = case @meta[:rotate]
+                when 90 then 'transpose=1'
+                when 180 then 'vflip, hflip'
+                when 270 then 'transpose=2'
+                end
+          if @convert_options[:output][:vf]
+            @convert_options[:output][:vf] += ", #{arg}"
+          else
+            @convert_options[:output][:vf] = "#{arg}"
           end
+          @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
         end
 
         if @convert_options.present?
