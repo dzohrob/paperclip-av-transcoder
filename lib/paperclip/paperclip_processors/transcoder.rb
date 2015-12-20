@@ -73,10 +73,12 @@ module Paperclip
                 when 180 then 'vflip, hflip'
                 when 270 then 'transpose=2'
                 end
-          if @convert_options[:output][:vf]
-            @convert_options[:output][:vf] += ", #{arg}"
-          else
-            @convert_options[:output][:vf] = "#{arg}"
+          if arg
+            if @convert_options[:output][:vf]
+              @convert_options[:output][:vf] += ", #{arg}"
+            else
+              @convert_options[:output][:vf] = "#{arg}"
+            end
           end
           @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
         end
