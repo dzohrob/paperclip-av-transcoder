@@ -71,6 +71,7 @@ module Paperclip
               @convert_options[:output][:vf] += ", #{arg}"
             else
               @convert_options[:output][:vf] = "#{arg}"
+            end
             @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
           end
         end
