@@ -44,15 +44,7 @@ module Paperclip
 
       @convert_options[:output][:s] = format_geometry(@geometry) if @geometry.present?
 
-      # todo: maybe clean this up? attachment model can handle the read/write
-      # of metadata.
-      if attachment
-        attachment_meta = attachment.meta || {}
-        attachment_meta[@style.to_sym] = @meta
-        json_meta = JSON.dump(attachment_meta)
-        log "JSON metadata: #{json_meta}"
-        attachment.instance_write(:meta, json_meta)
-      end
+      @attachment = attachment
     end
 
     # Performs the transcoding of the +file+ into a thumbnail/video. Returns the Tempfile
@@ -120,6 +112,17 @@ module Paperclip
         dst << @file.read
         dst.close
       end
+
+      # todo: maybe clean this up? attachment model can handle the read/write
+      # of metadata.
+      if @attachment
+        @attachment_meta = @attachment.meta || {}
+        @attachment_meta[@style.to_sym] = @meta
+        json_meta = JSON.dump(@attachment_meta)
+        log "JSON metadata: #{json_meta}"
+        @attachment.instance_write(:meta, json_meta)
+      end
+
       dst
     end
 
