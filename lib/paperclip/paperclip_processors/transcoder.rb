@@ -101,8 +101,8 @@ module Paperclip
           exif_data = MiniExiftool.new(dst.path)
           log "Exif data: #{exif_data.inspect}"
           @meta[:output] ||= {}
-          @meta[:output][:width] = exif_data.width
-          @meta[:output][:height] = exif_data.height
+          @meta[:output][:width] = exif_data.imagewidth
+          @meta[:output][:height] = exif_data.imageheight
         rescue Cocaine::ExitStatusError => e
           raise Paperclip::Error, "error while transcoding #{@basename}: #{e}" if @whiny
         end
