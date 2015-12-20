@@ -9,11 +9,13 @@ module Paperclip
     # set, the options will be appended to the convert command upon video transcoding.
     def initialize file, options = {}, attachment = nil
       log "Options: #{options.to_s}"
+      log "Attachment: #{attachment.inspect}"
 
       @file             = file
       @current_format   = File.extname(@file.path)
       @basename         = File.basename(@file.path, @current_format)
       @cli              = ::Av.cli
+      @style            = options[:style] || 'default'
       @meta             = ::Av.cli.identify(@file.path)
       @whiny            = options[:whiny].nil? ? true : options[:whiny]
 
@@ -42,9 +44,15 @@ module Paperclip
 
       @convert_options[:output][:s] = format_geometry(@geometry) if @geometry.present?
 
-      json_meta = JSON.dump(@meta)
-      log "JSON metadata: #{json_meta}"
-      attachment.instance_write(:meta, json_meta) if attachment
+      # todo: maybe clean this up? attachment model can handle the read/write
+      # of metadata.
+      if attachment
+        attachment_meta = attachment.meta || {}
+        attachment_meta[@style.to_sym] = @meta
+        json_meta = JSON.dump(attachment_meta)
+        log "JSON metadata: #{json_meta}"
+        attachment.instance_write(:meta, json_meta)
+      end
     end
 
     # Performs the transcoding of the +file+ into a thumbnail/video. Returns the Tempfile
@@ -100,6 +108,9 @@ module Paperclip
 
           exif_data = MiniExiftool.new(dst.path)
           log "Exif data: #{exif_data.inspect}"
+          @meta[:output] ||= {}
+          @meta[:output][:width] = exif_data.width
+          @meta[:output][:height] = exif_data.height
         rescue Cocaine::ExitStatusError => e
           raise Paperclip::Error, "error while transcoding #{@basename}: #{e}" if @whiny
         end
