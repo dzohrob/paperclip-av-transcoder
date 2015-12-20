@@ -62,14 +62,14 @@ module Paperclip
 
           if @auto_rotate && !@meta[:rotate].nil?
             log "Adding rotation #{@meta[:rotate]}"
-            case @meta[:rotate]
-            when 90
-              @convert_options[:output][:vf] = "'transpose=1'"
-            when 180
-              @convert_options[:output][:vf] = "'vflip, hflip'"
-            when 270
-              @convert_options[:output][:vf] = "'transpose=2'"
-            end
+            arg = case @meta[:rotate]
+                  when 90 then 'transpose=1'
+                  when 180 then 'vflip, hflip'
+                  when 270 then 'transpose=2'
+                  end
+            @convert_options[:output][:vf] ||= ''
+            @convert_options[:output][:vf] += " #{arg}"
+            @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
           end
         end
 
