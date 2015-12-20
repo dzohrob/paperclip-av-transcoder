@@ -97,6 +97,9 @@ module Paperclip
         begin
           @cli.run
           log "Successfully transcoded #{@basename} to #{dst}"
+
+          exif_data = MiniExiftool.new(dst.path)
+          log "Exif data: #{exif_data.to_s}"
         rescue Cocaine::ExitStatusError => e
           raise Paperclip::Error, "error while transcoding #{@basename}: #{e}" if @whiny
         end
