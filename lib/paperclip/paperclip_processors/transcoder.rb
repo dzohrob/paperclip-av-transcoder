@@ -149,7 +149,7 @@ module Paperclip
   class Attachment
     def meta
       data = instance_read(:meta)
-      data ? JSON.load(instance_read(:meta)).symbolize_keys : nil
+      data ? JSON.load(instance_read(:meta)) : nil
     end
   end
 end
