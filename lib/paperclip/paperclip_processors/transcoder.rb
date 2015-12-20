@@ -8,6 +8,8 @@ module Paperclip
     # +whiny+ is true (which it is, by default. If +convert_options+ is
     # set, the options will be appended to the convert command upon video transcoding.
     def initialize file, options = {}, attachment = nil
+      log "Options: #{options.to_s}"
+
       @file             = file
       @current_format   = File.extname(@file.path)
       @basename         = File.basename(@file.path, @current_format)
@@ -129,7 +131,8 @@ module Paperclip
 
   class Attachment
     def meta
-      JSON.load(instance_read(:meta))
+      data = instance_read(:meta)
+      data ? JSON.load(instance_read(:meta)).symbolize_keys : nil
     end
   end
 end
