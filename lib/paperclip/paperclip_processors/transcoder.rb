@@ -101,8 +101,15 @@ module Paperclip
           exif_data = MiniExiftool.new(dst.path)
           log "Exif data: #{exif_data.inspect}"
           @meta[:output] ||= {}
-          @meta[:output][:width] = exif_data.imagewidth
-          @meta[:output][:height] = exif_data.imageheight
+          # set metadata correctly if image is rotated
+          if exif_data.rotatation == 90 || exif_data.rotation == 270
+            @meta[:output][:width] = exif_data.imageheight
+            @meta[:output][:height] = exif_data.imagewidth
+          else
+            @meta[:output][:width] = exif_data.imagewidth
+            @meta[:output][:height] = exif_data.imageheight
+          end
+
         rescue Cocaine::ExitStatusError => e
           raise Paperclip::Error, "error while transcoding #{@basename}: #{e}" if @whiny
         end
