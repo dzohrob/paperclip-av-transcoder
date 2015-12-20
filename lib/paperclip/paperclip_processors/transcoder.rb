@@ -30,6 +30,9 @@ module Paperclip
         @shrink_only      = @keep_aspect    && modifier == '>'
       end
 
+      @exif_data = MiniExiftool.new(@file.path)
+      @meta[:rotate] = @exif_data.rotation
+
       @time             = options[:time].nil? ? 3 : options[:time]
       @auto_rotate      = options[:auto_rotate].nil? ? false : options[:auto_rotate]
       @pad_color        = options[:pad_color].nil? ? "black" : options[:pad_color]
