@@ -66,22 +66,22 @@ module Paperclip
           @cli.filter_seek @time
         end
 
-        if @auto_rotate && !@meta[:rotate].nil?
-          log "Adding rotation #{@meta[:rotate]}"
-          arg = case @meta[:rotate]
-                when 90 then 'transpose=1'
-                when 180 then 'vflip, hflip'
-                when 270 then 'transpose=2'
-                end
-          if arg
-            if @convert_options[:output][:vf]
-              @convert_options[:output][:vf] += ", #{arg}"
-            else
-              @convert_options[:output][:vf] = "#{arg}"
-            end
-          end
-          @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
-        end
+        # if @auto_rotate && !@meta[:rotate].nil?
+        #   log "Adding rotation #{@meta[:rotate]}"
+        #   arg = case @meta[:rotate]
+        #         when 90 then 'transpose=1'
+        #         when 180 then 'vflip, hflip'
+        #         when 270 then 'transpose=2'
+        #         end
+        #   if arg
+        #     if @convert_options[:output][:vf]
+        #       @convert_options[:output][:vf] += ", #{arg}"
+        #     else
+        #       @convert_options[:output][:vf] = "#{arg}"
+        #     end
+        #   end
+        #   @convert_options[:output][:vf] = "'#{@convert_options[:output][:vf]}'"
+        # end
 
         if @convert_options.present?
           if @convert_options[:input]
