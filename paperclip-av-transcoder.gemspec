@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "paperclip", ">=2.5.2"
   spec.add_dependency "av", "~> 0.9.0"
+  spec.add_dependency "json", "~> 1.8.3"
   spec.add_dependency "mini_exiftool", ">=2.5.1"
 end

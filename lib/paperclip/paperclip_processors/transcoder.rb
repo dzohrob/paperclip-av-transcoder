@@ -40,7 +40,7 @@ module Paperclip
 
       @convert_options[:output][:s] = format_geometry(@geometry) if @geometry.present?
 
-      attachment.instance_write(:meta, @meta) if attachment
+      attachment.instance_write(:meta, JSON.dump(@meta)) if attachment
     end
 
     # Performs the transcoding of the +file+ into a thumbnail/video. Returns the Tempfile
@@ -127,7 +127,7 @@ module Paperclip
 
   class Attachment
     def meta
-      instance_read(:meta)
+      JSON.load(instance_read(:meta))
     end
   end
 end
